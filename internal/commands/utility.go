@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/GSMSTCSClub/SillySubordinate/internal/util"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -135,6 +136,8 @@ func init() {
 					Name:        "count",
 					Required:    true,
 					Description: "Number of messages you would like to purge",
+					MinValue:    util.Float64Pointer(1.0),
+					MaxValue:    *util.Float64Pointer(100.0),
 				},
 			},
 		},
