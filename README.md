@@ -11,4 +11,4 @@ A Discord bot for the GSMST CS Club Discord server! (The name had to be changed.
 - [x] Purge
 - [] Remove Role
 - [] Server Info
-- [x] User
+- [x] config.User

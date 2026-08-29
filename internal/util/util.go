@@ -3,9 +3,8 @@ package util
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
+	"math/rand/v2"
 	"net/http"
-	"time"
 )
 
 // The URL for the quote API to use. Currently ZenQuotes
@@ -65,10 +64,19 @@ func GetZenQuote() (*ZenQuote, error) {
 
 // Generate a random color [int]. Can be used for embeds.
 func RandomColor() int {
-	// Generate random seed
-	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
-
 	// Generate random number for color
-	randomColor := rng.Intn(16777216)
+	randomColor := rand.N(16777216)
 	return randomColor
+}
+
+// Returns a random element in slice s. If slice s has a length of 0, the second return will return false
+func RandomItem[E any](s []E) (E, bool) {
+	if len(s) == 0 {
+		return *new(E), false
+	}
+
+	randomIndex := rand.N(len(s))
+	item := s[randomIndex]
+
+	return item, true
 }
