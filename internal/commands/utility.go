@@ -89,8 +89,8 @@ func purge(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 		// Fetch message IDs
 		messageIDs := make([]string, len(messages))
-		for i, msg := range messages {
-			messageIDs[i] = msg.ID
+		for idx, msg := range messages {
+			messageIDs[idx] = msg.ID
 		}
 
 		// Bulk delete

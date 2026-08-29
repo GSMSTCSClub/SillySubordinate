@@ -11,6 +11,7 @@ type Command struct {
 // Create variable to store commands
 var All = make(map[string]Command)
 
+// Function to register commands into slash commands
 func register(cmd Command) {
 	All[cmd.Definition.Name] = cmd
 }

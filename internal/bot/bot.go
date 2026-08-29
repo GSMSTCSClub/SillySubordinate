@@ -23,22 +23,6 @@ func Start() {
 		log.Fatal(err)
 	}
 
-	/* session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
-		// Ignore message if author is the bot
-		if m.Author.ID == s.State.User.ID {
-			return
-		}
-
-		args := strings.Split(m.Content, " ")
-		if args[0] != Prefix {
-			return
-		}
-
-		if args[1] == "hello" {
-			s.ChannelMessageSendReply(m.ChannelID, "Hello, World!", m.Reference())
-		}
-	}) */
-
 	dg.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 
 	err = dg.Open()
@@ -82,7 +66,7 @@ func Start() {
 	if TestingMode == "YES" {
 		log.Println("Removing commands...")
 		for _, cmd := range registeredCommands {
-			err := dg.ApplicationCommandDelete(dg.State.User.ID, "", cmd.ID)
+			err := dg.ApplicationCommandDelete(dg.State.User.ID, GuildID, cmd.ID)
 			if err != nil {
 				log.Printf("Cannot delete '%v' command: %v", cmd.Name, err)
 			}
