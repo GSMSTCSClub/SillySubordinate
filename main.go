@@ -1,20 +1,18 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/GSMSTCSClub/SillySubordinate/internal/bot"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
-
-	// unnecessary stuff
-	discord, err := discordgo.New("Bot" + "imagine a token")
+	// Load .env file
+	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("couldnt make yo bot")
-		return
+		log.Fatal("Error reading .env file")
 	}
 
-	discord.Close()
+	bot.Start()
 }
