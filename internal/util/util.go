@@ -11,7 +11,7 @@ import (
 // The URL for the quote API to use. Currently ZenQuotes
 const QuoteAPI string = "https://zenquotes.io/api/random"
 
-// A struct to represent the ZenQuote JSON response.
+// Represents a quote from ZenQuotes. Contains the quote text, author, and HTML content from the JSON.
 type ZenQuote struct {
 	Quote       string `json:"q"`
 	Author      string `json:"a"`
@@ -41,7 +41,7 @@ var EightBallResponses []string = []string{
 	"Very doubtful.",
 }
 
-// A function to get a ZenQuote. Returns the ZenQuote struct.
+// A function that returns a [ZenQuote]
 func GetZenQuote() (*ZenQuote, error) {
 	response, err := http.Get(QuoteAPI)
 	if err != nil {
@@ -63,17 +63,7 @@ func GetZenQuote() (*ZenQuote, error) {
 	return &quotes[0], nil
 }
 
-// A function to turn float64 into pointers. For some aspects of discordgo.
-func Float64Pointer(f float64) *float64 {
-	return &f
-}
-
-// A function to turn int into pointers. For some aspects of discordgo.
-func IntPointer(i int) *int {
-	return &i
-}
-
-// Generate a random color integer. Can be used for embeds.
+// Generate a random color [int]. Can be used for embeds.
 func RandomColor() int {
 	// Generate random seed
 	rng := rand.New(rand.NewSource(time.Now().UnixNano()))

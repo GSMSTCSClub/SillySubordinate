@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/GSMSTCSClub/SillySubordinate/internal/util"
 	"github.com/bwmarrin/discordgo"
@@ -61,14 +62,6 @@ func dumbPing(s *discordgo.Session, i *discordgo.InteractionCreate) {
 }
 
 func purge(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	// Get interaction information
-	channel := i.ChannelID
-	messageCount := i.ApplicationCommandData().GetOption("count")
-	interactionMember := i.Member
-
-	// Check if user has adqueate permissions
-	hasManageMessagePermission := (interactionMember.Permissions & discordgo.PermissionManageMessages) != 0
-
 	// Initialize response
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
@@ -76,6 +69,14 @@ func purge(s *discordgo.Session, i *discordgo.InteractionCreate) {
 			Flags: discordgo.MessageFlagsEphemeral,
 		},
 	})
+
+	// Get interaction information
+	channel := i.ChannelID
+	messageCount := i.ApplicationCommandData().GetOption("count")
+	interactionMember := i.Member
+
+	// Check if user has adqueate permissions
+	hasManageMessagePermission := (interactionMember.Permissions & discordgo.PermissionManageMessages) != 0
 
 	if hasManageMessagePermission {
 		messages, err := s.ChannelMessages(channel, int(messageCount.IntValue()), "", "", "")
@@ -109,6 +110,62 @@ func purge(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 }
 
+func user(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	// Initialize response
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
+	})
+
+	user := i.Member.User
+	userOption := i.ApplicationCommandData().GetOption("user")
+	if userOption != nil {
+		user = userOption.UserValue(s)
+	}
+
+	userAvatar := user.AvatarURL("512")
+
+	// Get user creation date
+	creationDate, err := discordgo.SnowflakeTimestamp(user.ID)
+	if err != nil {
+		log.Printf("Couldn't get user creation timestamp: %v", err)
+		return
+	}
+
+	embed := &discordgo.MessageEmbed{
+		Title:     "Stats of " + user.Username,
+		Color:     util.RandomColor(),
+		Thumbnail: &discordgo.MessageEmbedThumbnail{URL: userAvatar},
+		Fields: []*discordgo.MessageEmbedField{
+			{
+				Name:   "Username",
+				Value:  user.Username,
+				Inline: true,
+			},
+			{
+				Name:   "Display Name",
+				Value:  user.DisplayName(),
+				Inline: true,
+			},
+			{
+				Name:   "ID",
+				Value:  user.ID,
+				Inline: true,
+			},
+			{
+				Name:   "Discord Join Date",
+				Value:  creationDate.UTC().Format(time.UnixDate),
+				Inline: true,
+			},
+		},
+	}
+
+	s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
+		Embeds: &[]*discordgo.MessageEmbed{
+			embed,
+		},
+	})
+}
+
 func init() {
 	register(Command{
 		Definition: &discordgo.ApplicationCommand{
@@ -136,11 +193,27 @@ func init() {
 					Name:        "count",
 					Required:    true,
 					Description: "Number of messages you would like to purge",
-					MinValue:    util.Float64Pointer(1.0),
-					MaxValue:    *util.Float64Pointer(100.0),
+					MinValue:    new(1.0),
+					MaxValue:    *new(100.0),
 				},
 			},
 		},
 		Handler: purge,
+	})
+
+	register(Command{
+		Definition: &discordgo.ApplicationCommand{
+			Name:        "user",
+			Description: "Gets information about a user",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Type:        discordgo.ApplicationCommandOptionUser,
+					Description: "The user who you would like to get information on",
+					Required:    false, // If not given, get information on the interaction user
+					Name:        "user",
+				},
+			},
+		},
+		Handler: user,
 	})
 }

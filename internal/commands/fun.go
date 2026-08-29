@@ -128,8 +128,8 @@ func init() {
 					Name:        "question",
 					Required:    true,
 					Description: "The question you want to ask the 8 ball",
-					MinLength:   util.IntPointer(5),
-					MaxLength:   *util.IntPointer(100),
+					MinLength:   new(5),
+					MaxLength:   *new(100),
 				},
 				{
 					Type:        discordgo.ApplicationCommandOptionBoolean,
