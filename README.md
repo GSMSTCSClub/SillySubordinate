@@ -2,10 +2,10 @@
 
 A Discord bot for the GSMST CS Club Discord server! (The name had to be changed.)
 
-## Port Progress
+## Bot Port Progress
 - [x] 8 Ball
 - [x] Quote
-- [] Define
+- [ ] Define
 - [x] Dumb Ping
 - [x] Ping
 - [x] Purge
